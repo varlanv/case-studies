@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -17,10 +18,8 @@ public class UserService {
     private Map<Long, User> userCache = new HashMap<>();
 
     public User findById(long id) {
-        if (userCache.containsKey(id)) {
-            return userCache.get(id);
-        }
-        User user = userRepository.findById(id).orElse(null);
+        User user = Optional.ofNullable(userCache.get(id))
+                .orElseGet(() -> userRepository.findById(id).orElse(null));
         if (user != null) {
             userCache.put(id, user);
         }
@@ -41,10 +40,5 @@ public class UserService {
         updatedUser.setBalance(updatedBalance);
         userRepository.save(updatedUser);
         userCache.put(id, updatedUser);
-    }
-
-    public void delete(long id) {
-        userCache.remove(id);
-        userRepository.deleteById(id);
     }
 }
