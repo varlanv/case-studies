@@ -8,8 +8,8 @@ import java.math.BigDecimal;
 public class User {
 
     @Id
-    Long id;
-    BigDecimal balance;
+    private Long id;
+    private BigDecimal balance;
 
     public Long getId() {
         return id;

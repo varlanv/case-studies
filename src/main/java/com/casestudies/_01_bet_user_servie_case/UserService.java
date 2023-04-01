@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -34,11 +35,12 @@ public class UserService {
     }
 
     @Transactional
-    public void update(long id, User user) {
-        userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
-        user.setId(id);
-        userRepository.save(user);
-        userCache.put(id, user);
+    public void update(long id, User updatedUser) {
+        User existingUser = findById(id);
+        BigDecimal updatedBalance = existingUser.getBalance().add(updatedUser.getBalance());
+        updatedUser.setBalance(updatedBalance);
+        userRepository.save(updatedUser);
+        userCache.put(id, updatedUser);
     }
 
     public void delete(long id) {
