@@ -18,13 +18,13 @@ public class UserService {
     private Map<Long, User> userCache = new HashMap<>();
 
     public User findById(long id) {
-        User user = Optional.ofNullable(userCache.get(id))
-                .orElseGet(() -> userRepository.findById(id).orElse(null));
-        if (user != null) {
-            userCache.put(id, user);
+        User userFromCache = userCache.get(id);
+        if (userFromCache != null) {
+            return userFromCache;
         }
-        return user;
-    }
+        Optional<User> user = userRepository.findById(id);
+        user.ifPresent(usr -> userCache.put(id, usr));
+        return user.orElse(null);    }
 
     @Transactional
     public User save(User user) {
