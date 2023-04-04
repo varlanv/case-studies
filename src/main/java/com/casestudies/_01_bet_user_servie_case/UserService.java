@@ -24,7 +24,8 @@ public class UserService {
         }
         Optional<User> user = userRepository.findById(id);
         user.ifPresent(usr -> userCache.put(id, usr));
-        return user.orElse(null);    }
+        return user.orElse(null);
+    }
 
     @Transactional
     public User save(User user) {
